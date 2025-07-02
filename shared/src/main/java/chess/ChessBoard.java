@@ -70,6 +70,7 @@ public class ChessBoard {
         }
         sb.append("  a b c d e f g h");
         return sb.toString();
-        //steven armstrong
     }
+
+
 }
