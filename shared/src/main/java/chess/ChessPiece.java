@@ -1,21 +1,54 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Represents a single chess piece
- * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
- */
 public class ChessPiece {
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    private final ChessGame.TeamColor pieceColor;
+    private final PieceType type;
+
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
-    /**
-     * The various different chess piece options
-     */
+    public ChessGame.TeamColor getTeamColor() {
+        return pieceColor;
+    }
+
+    public PieceType getPieceType() {
+        return type;
+    }
+
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
+
+        // Movement logic placeholder
+        switch (type) {
+            case PAWN:
+                // TODO: Add pawn moves
+                break;
+            case ROOK:
+                // TODO: Add rook moves
+                break;
+            case KNIGHT:
+                // TODO: Add knight moves
+                break;
+            case BISHOP:
+                // TODO: Add bishop moves
+                break;
+            case QUEEN:
+                // TODO: Add queen moves
+                break;
+            case KING:
+                // TODO: Add king moves
+                break;
+        }
+
+        return moves;
+    }
+
     public enum PieceType {
         KING,
         QUEEN,
@@ -25,28 +58,21 @@ public class ChessPiece {
         PAWN
     }
 
-    /**
-     * @return Which team this chess piece belongs to
-     */
-    public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ChessPiece)) return false;
+        ChessPiece other = (ChessPiece) obj;
+        return pieceColor == other.pieceColor && type == other.type;
     }
 
-    /**
-     * @return which type of chess piece this piece is
-     */
-    public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+    @Override
+    public int hashCode() {
+        return 31 * pieceColor.hashCode() + type.hashCode();
     }
 
-    /**
-     * Calculates all the positions a chess piece can move to
-     * Does not take into account moves that are illegal due to leaving the king in
-     * danger
-     *
-     * @return Collection of valid moves
-     */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+    @Override
+    public String toString() {
+        return pieceColor.toString().charAt(0) + "-" + type.toString().charAt(0);
     }
 }
