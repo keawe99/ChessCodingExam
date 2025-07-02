@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ChessPiece {
 
@@ -22,31 +23,81 @@ public class ChessPiece {
     }
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<>();
+        List<ChessMove> moves = new ArrayList<>();
 
-        // Movement logic placeholder
         switch (type) {
-            case PAWN:
-                // TODO: Add pawn moves
-                break;
-            case ROOK:
-                // TODO: Add rook moves
-                break;
-            case KNIGHT:
-                // TODO: Add knight moves
-                break;
-            case BISHOP:
-                // TODO: Add bishop moves
-                break;
-            case QUEEN:
-                // TODO: Add queen moves
-                break;
-            case KING:
-                // TODO: Add king moves
-                break;
+            case ROOK -> generateLinearMoves(board, moves, myPosition, new int[][]{
+                    {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+            });
+            case BISHOP -> generateLinearMoves(board, moves, myPosition, new int[][]{
+                    {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+            });
+            case QUEEN -> generateLinearMoves(board, moves, myPosition, new int[][]{
+                    {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+                    {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+            });
+            case KING -> generateStepMoves(board, moves, myPosition, new int[][]{
+                    {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+                    {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+            });
+            case KNIGHT -> generateStepMoves(board, moves, myPosition, new int[][]{
+                    {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+                    {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+            });
+            case PAWN -> {
+                // We'll add pawn logic after this if you want
+            }
         }
 
         return moves;
+    }
+
+    private void generateLinearMoves(ChessBoard board, List<ChessMove> moves,
+                                     ChessPosition from, int[][] directions) {
+        for (int[] dir : directions) {
+            int row = from.getRow();
+            int col = from.getColumn();
+
+            while (true) {
+                row += dir[0];
+                col += dir[1];
+
+                if (!isInBounds(row, col)) break;
+
+                ChessPosition to = new ChessPosition(row, col);
+                ChessPiece target = board.getPiece(to);
+
+                if (target == null) {
+                    moves.add(new ChessMove(from, to, null));
+                } else {
+                    if (target.getTeamColor() != this.pieceColor) {
+                        moves.add(new ChessMove(from, to, null));
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void generateStepMoves(ChessBoard board, List<ChessMove> moves,
+                                   ChessPosition from, int[][] directions) {
+        for (int[] dir : directions) {
+            int row = from.getRow() + dir[0];
+            int col = from.getColumn() + dir[1];
+
+            if (isInBounds(row, col)) {
+                ChessPosition to = new ChessPosition(row, col);
+                ChessPiece target = board.getPiece(to);
+
+                if (target == null || target.getTeamColor() != this.pieceColor) {
+                    moves.add(new ChessMove(from, to, null));
+                }
+            }
+        }
+    }
+
+    private boolean isInBounds(int row, int col) {
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
 
     public enum PieceType {
