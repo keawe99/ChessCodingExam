@@ -78,5 +78,19 @@ public class ChessBoard {
         return sb.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessBoard)) return false;
+        ChessBoard other = (ChessBoard) o;
+        return this.board.equals(other.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return board.hashCode();
+    }
+
+
 
 }
