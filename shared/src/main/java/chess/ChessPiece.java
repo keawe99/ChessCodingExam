@@ -45,8 +45,53 @@ public class ChessPiece {
                     {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
             });
             case PAWN -> {
-                // We'll add pawn logic after this if you want
+                int direction = (pieceColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+                int startRow = (pieceColor == ChessGame.TeamColor.WHITE) ? 2 : 7;
+                int promotionRow = (pieceColor == ChessGame.TeamColor.WHITE) ? 8 : 1;
+
+                int row = myPosition.getRow();
+                int col = myPosition.getColumn();
+
+                // One step forward
+                ChessPosition oneStep = new ChessPosition(row + direction, col);
+                if (board.inBounds(oneStep) && board.getPiece(oneStep) == null) {
+                    if (oneStep.getRow() == promotionRow) {
+                        for (PieceType promotion : new PieceType[]{
+                                PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                            moves.add(new ChessMove(myPosition, oneStep, promotion));
+                        }
+                    } else {
+                        moves.add(new ChessMove(myPosition, oneStep, null));
+                    }
+
+                    // Two steps forward
+                    ChessPosition twoStep = new ChessPosition(row + 2 * direction, col);
+                    if (row == startRow && board.inBounds(twoStep) && board.getPiece(twoStep) == null) {
+                        moves.add(new ChessMove(myPosition, twoStep, null));
+                    }
+                }
+
+                // Diagonal captures
+                for (int dc = -1; dc <= 1; dc += 2) {
+                    int captureCol = col + dc;
+                    ChessPosition diagPos = new ChessPosition(row + direction, captureCol);
+
+                    if (board.inBounds(diagPos)) {
+                        ChessPiece target = board.getPiece(diagPos);
+                        if (target != null && target.getTeamColor() != this.pieceColor) {
+                            if (diagPos.getRow() == promotionRow) {
+                                for (PieceType promotion : new PieceType[]{
+                                        PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                                    moves.add(new ChessMove(myPosition, diagPos, promotion));
+                                }
+                            } else {
+                                moves.add(new ChessMove(myPosition, diagPos, null));
+                            }
+                        }
+                    }
+                }
             }
+
         }
 
         return moves;
